@@ -10,7 +10,7 @@ print(numbers)
 # numbers.reverse()  # 反转
 # print(numbers)
 
-# numbers.sort()  # 默认升序（False），可以通过reverse参数改变
+# numbers.sort()  #   默认升序（False），可以通过reverse参数改变
 # print(numbers)
 
 numbers.sort(reverse=True)
