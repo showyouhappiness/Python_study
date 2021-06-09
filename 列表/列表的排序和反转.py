@@ -26,10 +26,19 @@ print(numbers)
 # numbers.sort()
 # print(numbers)
 
-# 方法二
-num = int(input('输入一个0~20之间的整数：'))
-for i in range(len(numbers)):
-    if (numbers[i] <= num) and (numbers[i + 1] > num):
-        numbers.insert(i + 1, num)
+# # 方法二
+# num = int(input('输入一个0~20之间的整数：'))
+# for i in range(len(numbers)):
+#     if (numbers[i] <= num) and (numbers[i + 1] > num):
+#         numbers.insert(i + 1, num)
+#         break
+# print(numbers)
+
+# 方法三
+number = int(input("输入一个0~20之间的整数："))
+for i in numbers:
+    if number <= i:
+        numbers.insert(numbers.index(i), number)
         break
-print(numbers)
+else:
+    numbers.append(number)
