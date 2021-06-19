@@ -7,9 +7,15 @@ target_path = r'E:\新建文件夹 (2)'
 def copy(src, target):
     if os.path.isdir(src) and os.path.isdir(target):
         fileList = os.listdir(src)
+        # 变量列表
         for file in fileList:
+            # 拼接路径
             path = os.path.join(src, file)
+            # 判断是文件夹还是文件
             if os.path.isdir(path):
+                # 递归调用copy
+                target_path1 = os.path.join(target_path, file)
+                os.mkdir(target_path1)
                 copy(path, target)
             else:
                 with open(path, 'rb') as readStream:
