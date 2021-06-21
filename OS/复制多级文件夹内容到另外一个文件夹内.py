@@ -17,6 +17,9 @@ def copy(src, target):
                 target_path1 = os.path.join(target_path, file)
                 os.mkdir(target_path1)
                 copy(path, target)
+                target_path1 = os.path.join(target_path, file)
+                if not os.path.exists(target_path1):
+                    os.makedirs(target_path1)
             else:
                 with open(path, 'rb') as readStream:
                     container = readStream.read()
