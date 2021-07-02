@@ -14,8 +14,6 @@ def copy(src, target):
             # 判断是文件夹还是文件
             if os.path.isdir(path):
                 # 递归调用copy
-                target_path1 = os.path.join(target_path, file)
-                os.mkdir(target_path1)
                 copy(path, target)
                 target_path1 = os.path.join(target_path, file)
                 if not os.path.exists(target_path1):
