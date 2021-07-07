@@ -1,7 +1,7 @@
 import os
 
-src_path = r'E:\python'
-target_path = r'E:\新建文件夹 (2)'
+src_path = r'E:\x5'
+target_path = r'E:\新建文件夹 (2)\knuckle'
 
 
 def copy(src, target):
@@ -43,4 +43,4 @@ def delete(src):
 
 
 copy(src_path, target_path)
-delete(src_path)
+# delete(src_path)
