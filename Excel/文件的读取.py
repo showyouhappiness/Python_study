@@ -4,7 +4,7 @@ import datetime
 
 # 读取Excel文件
 file = u"test.xls"  # 注意读中文文件名稍微处理一下
-data = xlrd.open_workbook(file)
+data = xlrd.open_workbook(file, formatting_info=True)
 
 # Sheet1
 table = data.sheet_by_index(0)  # 按照索引读Excel文件
@@ -50,7 +50,3 @@ for i in range(0, totalRows):
         rowList.append(cellValue)
     excelMap[str(i) + "行"] = rowList
 print(excelMap)
-print(table.merged_cells)
-# print(table.cell_value(1, 3))
-# print(table.cell_value(4, 3))
-# print(table.cell_value(6, 2))
