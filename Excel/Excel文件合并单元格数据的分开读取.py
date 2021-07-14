@@ -61,11 +61,11 @@ def get_merged_cells_value(sheet, row_index, col_index):
     如果是合并单元格，就返回合并单元格的内容
     :return:
     """
-    # merged = get_merged_cells(sheet)
-    merged = sheet.merged_cells
+    merged = get_merged_cells(sheet)
+    # merged = sheet.merged_cells
     for (rlow, rhigh, clow, chigh) in merged:
-        if (row_index >= rlow and row_index < rhigh):
-            if (col_index >= clow and col_index < chigh):
+        if rlow <= row_index < rhigh:
+            if clow <= col_index < chigh:
                 cell_value = sheet.cell_value(rlow, clow)
                 # print('该单元格[%d,%d]属于合并单元格，值为[%s]' % (row_index, col_index, cell_value))
                 return cell_value
