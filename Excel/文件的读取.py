@@ -50,3 +50,4 @@ for i in range(0, totalRows):
         rowList.append(cellValue)
     excelMap[str(i) + "行"] = rowList
 print(excelMap)
+print(table.merged_cells)

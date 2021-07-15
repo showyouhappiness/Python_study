@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     # 获取虎牙妹子
     # 使用多进程
-    for i in range(1, 120):
+    for i in range(1, 5):
 
         url = 'https://www.huya.com/cache.php?m=LiveList&do=getLiveListByPage&gameId=1663&tagAll=0&callback' \
               '=getLiveListJsonpCallback&page=' + str(i)
