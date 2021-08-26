@@ -17,7 +17,7 @@ start = time.time()
 threads = []
 for file in os.listdir(path):
     t = threading.Thread(target=read_file, args=(file,))
-    time.sleep(0.05)
+    # time.sleep(0.05)
     threads.append(t)
 
 [t.start() for t in threads]
