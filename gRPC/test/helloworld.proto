@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package test;
+
+service hello{
+  rpc HelloWorld(HelloWorldReq)  returns (HelloWorldReply){}
+  //  可以将传入和传出的写成流的形式
+  rpc helloTest(stream helloTestRequest)  returns (stream helloTestReply){}
+  rpc TestClientRecvStream(TestClientRecvStreamRequest) returns (stream TestClientRecvStreamResponse){}
+  rpc TestClientSendStream(stream TestClientSendStreamRequest) returns (TestClientSendStreamResponse){}
+  rpc TestTwoWayStream(stream TestTwoWayStreamRequest) returns (stream TestTwoWayStreamResponse){}
+}
+
+// 传输方式
+//1 unary 单程
+//2 stream 1: 双向 客户端请求服务器端(流),服务器端send给客户端(流)
+//         2: 单向 客户端请求服务器端(流),服务器端send给客户端(流)
+//         3: 单向 客户端请求服务器端(流),服务器端send给客户端(流)
+// 双向流 客户端与服务端建立长链接，双方发送和接收流数据；
+// 单向流 依然是客户端与服务端建立一个长链接，但单向流由两种模式，
+// 一种是客户端不停给服务端发送流数据，服务器端只负责接收；
+// 另一种是服务器端不停给客户端发送流数据，客户端只负责接收
+message HelloWorldReq {
+  string name = 1;
+  int32 age = 2;
+}
+message HelloWorldReply {
+  string result = 1;
+}
+
+message helloTestRequest {
+  string name = 1;
+  int64 age = 2;
+  repeated string data = 3;
+  //这个可以当做全局变量也可以当做局部变量，如果当做全部变量可将它放到顶部
+  message helloTestRequestNumberValue {
+    string name = 11;
+    int32 age = 2;
+    bool is_active = 3;
+  };
+  map<string, helloTestRequestNumberValue> number = 4;  //string, int32, bool
+}
+
+message helloTestReply {}
+
+message TestClientRecvStreamRequest {
+  string data = 1;
+}
+
+message TestClientRecvStreamResponse {
+  string result = 1;
+}
+
+message TestClientSendStreamRequest {
+  string data = 1;
+}
+
+message TestClientSendStreamResponse {
+  string result = 1;
+}
+
+message TestTwoWayStreamRequest {
+  string data = 1;
+}
+
+message TestTwoWayStreamResponse {
+  string result = 1;
+}
