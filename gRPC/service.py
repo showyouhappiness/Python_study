@@ -11,10 +11,14 @@ import helloworld_pb2
 import helloworld_pb2_grpc
 
 
-class Greeter(helloworld_pb2_grpc.GreeterServicer):
+class Greeter(helloworld_pb2_grpc.helloServicer):
 
     def SayHello(self, request, context):
-        return helloworld_pb2.HelloReply(message='Hello, %s!' % request.name)
+        # 下面三行是自定义报错
+        context.set_details('haha bug')
+        context.set_code(grpc.StatusCode.DATA_LOSS)
+        raise context
+        return helloworld_pb2.HelloWorldReply(message='Hello, %s!' % request.name)
 
     # 服务器(流)一直给客户端返回信息
     def TestClientRecvStream(self, request, context):
@@ -59,7 +63,7 @@ class Greeter(helloworld_pb2_grpc.GreeterServicer):
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    helloworld_pb2_grpc.add_GreeterServicer_to_server(Greeter(), server)
+    helloworld_pb2_grpc.add_helloServicer_to_server(Greeter(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
     server.wait_for_termination()

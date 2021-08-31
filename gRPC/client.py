@@ -29,25 +29,33 @@ def test():
 
 def run():
     with grpc.insecure_channel('localhost:50051') as channel:
-        stub = helloworld_pb2_grpc.GreeterStub(channel)
-        # response = stub.SayHello(helloworld_pb2.HelloRequest(name='you'))
+        stub = helloworld_pb2_grpc.helloStub(channel)
+        # response = stub.HelloWorld(helloworld_pb2.HelloWorldReq(name='you'))
+        # print("Greeter client received: " + response)
+        try:
+            response = stub.HelloWorld(helloworld_pb2.HelloWorldReq(name='you'))
+            print("Greeter client received: " + response.message)
+        except Exception as e:
+            print(e.code())
+            print(e.code().name, e.code().value)
+            print(e.details())
+            print(e)
 
         # 服务器(流)
-        # response = client.TestClientRecvStream(helloworld_pb2.TestClientRecvStreamRequest(
+        # response = stub.TestClientRecvStream(helloworld_pb2.TestClientRecvStreamRequest(
         #     data='liyongjun'
         # ))
         # for item in response:
         #     print(item.result)
-        #     print("Greeter client received: " + response.message)
 
         # 客户端(流)
-        # response = client.TestClientSendStream(test())
+        # response = stub.TestClientSendStream(test())
         # print(response.result)
 
         # 双向流
-        response = client.TestTwoWayStream(test(), timeout=10)
-        for res in response:
-            print(res.result)
+        # response = stub.TestTwoWayStream(test(), timeout=10)
+        # for res in response:
+        #     print(res.result)
 
 
 if __name__ == '__main__':
