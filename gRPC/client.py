@@ -33,13 +33,23 @@ def run():
         # response = stub.HelloWorld(helloworld_pb2.HelloWorldReq(name='you'))
         # print("Greeter client received: " + response)
         try:
-            response = stub.HelloWorld(helloworld_pb2.HelloWorldReq(name='you'))
-            print("Greeter client received: " + response.message)
+            response, call = stub.HelloWorld.with_call(helloworld_pb2.HelloWorldReq(
+                name='you'
+            ),
+                # 客户端压缩
+                compression=grpc.Compression.Gzip,
+                metadata=(('client_key', 'client_value'),),
+                wait_for_ready=True
+            )
+            print("client received: " + response.result)
+            header = call.trailing_metadata
+            print(header)
+            print(header[0].key, header[0].value)
         except Exception as e:
-            print(e.code())
+            # print(e.code())
             print(e.code().name, e.code().value)
             print(e.details())
-            print(e)
+            # print(e)
 
         # 服务器(流)
         # response = stub.TestClientRecvStream(helloworld_pb2.TestClientRecvStreamRequest(
