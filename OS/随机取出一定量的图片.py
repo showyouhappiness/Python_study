@@ -9,12 +9,12 @@ def moveFile(fileDir):
     picknumber = int(filenumber * rate)  # 按照rate比例从文件夹中取一定数量图片
     sample = random.sample(pathDir, picknumber)  # 随机选取picknumber数量的样本图片
     print(sample)
-    for name in sample:
-        shutil.move(fileDir + name, tarDir + name)
-    return
+    # for name in sample:
+    #     shutil.move(fileDir + '\\' + name, tarDir + '\\' + name)
+    # return
 
 
 if __name__ == '__main__':
-    fileDir = r'E:\workImages\图片过滤与修改时间\result\1\\'  # 源图片文件夹路径
+    fileDir = r'E:\workImages\图片过滤与修改时间\result\1'  # 源图片文件夹路径
     tarDir = r'E:\workImages\图片过滤与修改时间\test'  # 移动到新的文件夹路径
     moveFile(fileDir)

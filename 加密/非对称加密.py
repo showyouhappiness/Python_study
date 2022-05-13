@@ -70,7 +70,7 @@ with open("private_a.rsa") as f:
     print(back_text, '使用私钥对内容进行RSA解密')
 
 
-if back_text == passwd:
+if back_text == password:
     print("加密成功了！！！！！！！！！")
 
 """
