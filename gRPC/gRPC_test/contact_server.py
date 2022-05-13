@@ -41,3 +41,8 @@ def tellResult(self, request_iterator, context):
         print(f"我已经知道客户端接收到我发过去的任务:{response.ret}")
 
     return contact_pb2.Empty()
+
+
+if __name__ == '__main__':
+    logging.basicConfig()
+    tellResult()
