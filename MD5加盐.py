@@ -28,6 +28,6 @@ pwd = '20141124'
 salt = 'crf'
 # 加密后的密码
 md5 = create_md5(pwd, salt)
-print('[pwd]\n', pwd)
-print('[salt]\n', salt)
-print('[md5]\n', md5)
+print('[pwd]', pwd)
+print('[salt]', salt)
+print('[md5]', md5)
