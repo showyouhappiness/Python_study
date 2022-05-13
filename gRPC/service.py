@@ -109,7 +109,7 @@ class Greeter(helloworld_pb2_grpc.helloServicer):
 
 
 def serve():
-    validator = TestInterceptor('name', 'liyongjun', grpc.StatusCode.UNAUTHENTICATED, 'AccessDenied')
+    # validator = TestInterceptor('name', 'liyongjun', grpc.StatusCode.UNAUTHENTICATED, 'AccessDenied')
     server = grpc.server(
         futures.ThreadPoolExecutor(max_workers=10),
         # 整体（所有方法）添加压缩
@@ -118,7 +118,7 @@ def serve():
             ('grpc.max_send_message_length', 50 * 1024 * 1024),
             ('grpc.max_receive_message_length', 50 * 1024 * 1024)
         ],
-        interceptors=(validator,)
+        # interceptors=(validator,)
     )
     helloworld_pb2_grpc.add_helloServicer_to_server(Greeter(), server)
     server.add_insecure_port('[::]:50051')
