@@ -4,7 +4,6 @@ src_path = r'Z:\test'
 
 if not os.path.exists(src_path):
     print('没有读到文件夹')
-
 else:
     print('读到文件夹')
     src_path_list = os.listdir(src_path)

@@ -9,9 +9,6 @@ import win32con
 import win32event
 import win32file
 
-from log import f_log
-from utils import MessageCode, type_define
-
 
 class Monitor(threading.Thread):
     ACTIONS = {
@@ -33,14 +30,11 @@ class Monitor(threading.Thread):
 
     def run(self):
 
-        f_log.LOGW(f"monitor_picture path_to_watch={self.path_to_watch}")
 
         while True:
             if os.path.exists(self.path_to_watch):
-                f_log.LOGW(f'{self.path_to_watch} exist')
                 break
             else:
-                f_log.LOGW(f'{self.path_to_watch} not exist')
                 # if self.server_state != MessageCode.M_ERROR_MONITOR_PATH_NO_EXIST:
                 #     self.alarm_func(MessageCode.M_ERROR_MONITOR_PATH_NO_EXIST, '无法读取X光图像路径')
                 time.sleep(1)
@@ -69,13 +63,11 @@ class Monitor(threading.Thread):
                                         overlapped)
 
         while self.monitor_thread_exit_flag is False:
-            f_log.LOGI("monitor_picture start +++++++++++++++++++++++++++++")
             try:
                 ret = win32event.WaitForSingleObject(overlapped.hEvent, 5000)
 
                 if ret == win32event.WAIT_OBJECT_0:
                     nbytes = win32file.GetOverlappedResult(hDir, overlapped, True)
-                    f_log.LOGI(f"file nbytes {nbytes}")
                     if nbytes > 0:
 
                         for action, file in win32file.FILE_NOTIFY_INFORMATION(buffer, nbytes):
@@ -90,7 +82,6 @@ class Monitor(threading.Thread):
 
                                 if updated_file == full_filename:
                                     updatetimes = updatetimes + 1
-                                    f_log.LOGI(f"monitor_picture ({updated_file}) updated {updatetimes} times")
                                 else:
                                     updatetimes = 1
                                     updated_file = full_filename
