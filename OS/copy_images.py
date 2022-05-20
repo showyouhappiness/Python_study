@@ -13,33 +13,31 @@ import win32con
 
 def parse_file_name(copied, target, modelWhere, pic_num, allOrOne):
     if os.path.exists(copied):
-        (filepath, tempFilename) = os.path.split(copied)
-        wheel_type = tempFilename[int(tempFilename.find('N')):int(tempFilename.find('R'))]
-        target_detail = target + '/' + wheel_type
-        if not os.path.exists(target_detail):
-            os.makedirs(target_detail)
-        if len(os.listdir(target_detail)) > int(pic_num) - 1:
-            return
-        time.sleep(1)
-        if allOrOne == '全部':
-            with open(copied, 'rb') as readStream:
-                container_master = readStream.read()
-                target_detail_path = os.path.join(target_detail, tempFilename)
-                with open(target_detail_path, 'wb') as writeStream:
-                    writeStream.write(container_master)
-            if modelWhere == '本地':
-                time.sleep(0.5)
-                os.remove(copied)
-        else:
-            if 'I1A' in tempFilename:
-                with open(copied, 'rb') as readStream:
-                    container_master = readStream.read()
-                    target_detail_path = os.path.join(target_detail, tempFilename)
-                    with open(target_detail_path, 'wb') as writeStream:
-                        writeStream.write(container_master)
-                    if modelWhere == '本地':
-                        time.sleep(1)
-                        os.remove(copied)
+        for step in ['V2', 'V3', 'V4']:
+            if step in copied:
+                (filepath, tempFilename) = os.path.split(copied)
+                wheel_type = tempFilename[int(tempFilename.find('N')):int(tempFilename.find('R'))]
+                target_detail = target + '/' + wheel_type
+                if not os.path.exists(target_detail):
+                    os.makedirs(target_detail)
+                if len(os.listdir(target_detail)) > int(pic_num) - 1:
+                    return
+                time.sleep(2)
+                if allOrOne == '全部':
+                    copyImages(copied, modelWhere, target_detail, tempFilename)
+                else:
+                    if 'I1A' in tempFilename:
+                        copyImages(copied, modelWhere, target_detail, tempFilename)
+
+
+def copyImages(copied, modelWhere, target_detail, tempFilename):
+    with open(copied, 'rb') as readStream:
+        container_master = readStream.read()
+        target_detail_path = os.path.join(target_detail, tempFilename)
+        with open(target_detail_path, 'wb') as writeStream:
+            writeStream.write(container_master)
+    if modelWhere == '本地':
+        os.remove(copied)
 
 
 def monitor_dir(path_to_watch, target, modelWhere, pic_num, allOrOne):
@@ -81,8 +79,9 @@ def monitor_dir(path_to_watch, target, modelWhere, pic_num, allOrOne):
             full_filename = os.path.join(path_to_watch, filename)
             print(full_filename, ACTIONS.get(action, "Unknown"))
             # parse_file_name(full_filename, target, modelWhere, pic_num, allOrOne)
-            threading.Thread(target=parse_file_name,
-                             args=(full_filename, target, modelWhere, pic_num, allOrOne)).start()
+            if ACTIONS.get(action, "Unknown") == 'Created':
+                threading.Thread(target=parse_file_name,
+                                 args=(full_filename, target, modelWhere, pic_num, allOrOne)).start()
 
 
 class Example(QWidget):
@@ -129,7 +128,7 @@ class Example(QWidget):
 
         self.btn.clicked.connect(self.openFile)
         self.btn_1.clicked.connect(self.saveFile)
-        self.btn_2.clicked.connect(self.copyImages)
+        self.btn_2.clicked.connect(self.writeContent)
 
         self.show()
 
@@ -143,10 +142,12 @@ class Example(QWidget):
         if directory:
             self.lineEdit_btn.setText(directory)
 
-    def copyImages(self):
+    def writeContent(self):
         if len(self.lineEdit.text()) == 0 or len(self.lineEdit_btn.text()) == 0 or len(self.lineEdit_1.text()) == 0 \
                 or len(self.lineEdit_2.text()) == 0 or len(self.lineEdit_3.text()) == 0:
             QMessageBox.warning(self, '警告', '请填写所有的内容', QMessageBox.Cancel, QMessageBox.Cancel)
+        elif (self.lineEdit_1.text() not in ['产线', '本地']) or (self.lineEdit_3.text() not in ['全部', '一张']):
+            QMessageBox.warning(self, '警告', '请填写正确的内容', QMessageBox.Cancel, QMessageBox.Cancel)
         else:
             threading.Thread(target=monitor_dir, args=(self.lineEdit.text(), self.lineEdit_btn.text(),
                                                        self.lineEdit_1.text(), self.lineEdit_2.text(),
