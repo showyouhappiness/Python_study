@@ -38,7 +38,7 @@ def write_excel():
     sheet1.write_merge(4, 4, 2, 3, '有勇有谋')  # 合并行单元格
     sheet1.write_merge(5, 5, 2, 3, '射的一手好箭')  # 合并行单元格
 
-    f.save('test1.xls')
+    f.save('test.xls')
 
 
 if __name__ == '__main__':
