@@ -9,7 +9,7 @@ def test(p):
 
 ts = []
 
-for i in range(15):
+for i in range(150):
     # target指定线程要执行的代码，args指定该代码的参数
     th = threading.Thread(target=test, args=[i])
     ts.append(th)
