@@ -23,7 +23,7 @@ dict2 = {key: dict[key] for key in sorted_keys}
 print(dict2)
 my_dict = {'a': 300, 'c': 100, 'b': 200}
 list_1 = list(my_dict.items())
-print(list_1)
+print(list_1, '11111111')
 # 对字典按照key值进行排序,并返回排序后的新字典
 my_dict_sortbykey = sorted(list_1, key=lambda x: x[0])
 print(my_dict_sortbykey)
@@ -39,3 +39,13 @@ print(my_dict_sortedkeys)
 # 提取字典的所有values并进行排序（实质就是sorted函数应用于简单元素的列表）
 my_dict_sortedvalues = sorted(my_dict.values())
 print(my_dict_sortedvalues)
+x = lambda a, b: a * b
+print(x(5, 6))
+
+
+def myfunc(n):
+    return lambda a: a * n
+
+
+mydoubler = myfunc(2)
+print(mydoubler(11))

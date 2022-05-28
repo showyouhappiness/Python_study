@@ -11,7 +11,7 @@ def consumer():
 def produce(c):
     c.send(None)
     n = 0
-    while n < 5:
+    while n < 10000:
         n = n + 1
         print('[PRODUCER] Producing %s...' % n)
         r = c.send(n)

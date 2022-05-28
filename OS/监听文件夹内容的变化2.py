@@ -9,7 +9,6 @@ from watchdog.observers import Observer
 from watchdog.events import *
 # 导入时间模块
 import time
-from test import copy
 
 target_path = r'E:\result_images2'
 

@@ -25,7 +25,10 @@ def main(src, target):
             file_path = filepath
             now_time = datetime.datetime.now()
             i = 0
-
+        # 判断是不是
+        if i == 20:
+            now_time = now_time + datetime.timedelta(days=-1)
+            i = 0
         index_time = fullflname.find('_')  # 查找 _ 的index值
         newName = fullflname.replace(fullflname[:index_time], now_time.strftime('%Y-%m-%d'))  # 用当前时间替换之前的时间
         target_path = target + '\\' + sub_path  # 根据目标的路径，构建出结果的路径
@@ -39,6 +42,7 @@ def main(src, target):
         if target_detail in all_file_list:
             newName = fullflname.replace(fullflname[:index_time],
                                          (now_time + datetime.timedelta(days=-1)).strftime('%Y-%m-%d'))
+
             target_detail = os.path.join(target_path, newName)
 
         with open(file_detail, 'rb') as readStream:
@@ -61,6 +65,7 @@ def moveFile(fileDir):
             sample_type = sample_split[0] + '_' + sample_split[1]
             for pathDir_detail in pathDir:
                 if sample_type in pathDir_detail:
+                    print(pathDir_detail)
                     file_sample = fileDir_detail + '\\' + pathDir_detail
                     target_sample = public_path + r'/test/' + i + '/'
                     if not os.path.exists(target_sample):
@@ -77,4 +82,4 @@ if __name__ == '__main__':
     target = public_path + r'\result'
     for src_path in [public_path + r'\阶梯块结果图', public_path + r'\校准']:
         main(src_path, target)
-    # moveFile(target)
+    moveFile(target)

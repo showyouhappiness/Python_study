@@ -6,12 +6,15 @@ import threading
 import time
 
 
-def thread_Timer(batch_num):
-    now_time = datetime.datetime.now().strftime('%Y-%m-%d')
-    src_path = r'E:\workImages\图片过滤与修改时间\result'
-    result_path = r'E:\workImages\图片过滤与修改时间\test'
+def thread_Timer(batch_num, test_time):
+    now_time = datetime.datetime.now().strftime("%Y-%m-%d")
+    src_path = r'C:\Users\Administrator\Postman\files\测试图片'
+    result_path = r'D:\标准'
     batch_num_all = None
     fileDir_child = os.listdir(src_path)
+    if test_time != now_time:
+        test_time = now_time
+        batch_num = random.randint(100, 200)
     for i in fileDir_child:
         copy_sample = src_path + '/' + i
         batch_num_all = batch_num + random.randint(220, 250)
@@ -32,16 +35,17 @@ def thread_Timer(batch_num):
                         with open(result_image, 'wb') as writeStream:
                             writeStream.write(container)
 
-    createTime(batch_num_all)
-
-
-def createTime(batch_num):
+        random_time = random.randint(3, 8)
+        time.sleep(random_time * 60)
     picknumber = random.randint(16, 20)
     interval_time = 3600 * 24 / picknumber
-    print(interval_time)
+    createTime(batch_num_all, interval_time, test_time)
+
+
+def createTime(batch_num, interval_time=10.0, test_time=None):
     # 创建并初始化线程
-    threading.Timer(interval_time, thread_Timer, args=(batch_num,)).start()
+    threading.Timer(interval_time, thread_Timer, args=(batch_num, test_time)).start()
 
 
-batch_num = random.randint(100, 200)
+batch_num = random.randint(0, 10)
 createTime(batch_num)
