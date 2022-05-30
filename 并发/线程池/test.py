@@ -1,3 +1,4 @@
+# ThreadPoolExecutor submit 传递多个参数
 from concurrent.futures import ThreadPoolExecutor
 
 
