@@ -1,6 +1,5 @@
 import sys
-import os
-import time
+import os, shutil
 
 from PyQt5.QtWidgets import QWidget, QApplication, QPushButton, QFileDialog, QLineEdit, QLabel, QMessageBox
 from PyQt5.QtCore import QRect
@@ -11,22 +10,23 @@ import win32file
 import win32con
 
 
-def parse_file_name(copied, modelWhere, allOrOne, v_num_input, target_detail, pic_num):
+def parse_file_name(copied, modelWhere, allOrOne, v_num_input, target_detail, pic_num, target_path):
+    print(len(os.listdir(target_path)), int(pic_num))
+    if not os.path.exists(target_detail):
+        os.makedirs(target_detail)
     v_num_list = v_num_input.split(',')
     v_num = copied[int(copied.find('V')) + 1:int(copied.find('I'))]
-    if len(os.listdir(target_detail)) > int(pic_num) - 1:
-        return
     if os.path.exists(copied) and v_num in v_num_list:
         (filepath, tempFilename) = os.path.split(copied)
-        if allOrOne == '一张' and 'I1A' not in tempFilename:
-            return
-        with open(copied, 'rb') as readStream:
-            container_master = readStream.read()
-            target_detail_path = os.path.join(target_detail, tempFilename)
-            with open(target_detail_path, 'wb') as writeStream:
-                writeStream.write(container_master)
+        target_detail_path = os.path.join(target_detail, tempFilename)
         if modelWhere == '本地':
-            os.remove(copied)
+            if allOrOne == '一张' and 'I1A' not in tempFilename:
+                return
+            shutil.copy(copied, target_detail_path)
+            # print('from', copied, 'to', target_detail_path)
+        else:
+            shutil.copy(copied, target_detail_path)
+            # print('from', copied, 'to', target_detail_path)
 
 
 def monitor_dir(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num_input):
@@ -64,17 +64,21 @@ def monitor_dir(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num_inpu
             win32con.FILE_NOTIFY_CHANGE_SECURITY,
             None,
             None)
+
         for action, filename in results:
-            wheel_type = filename[int(filename.find('N')):int(filename.find('R'))]
-            batch_num = filename[int(filename.find('P')):int(filename.find('W'))]
-            target_detail = target + '/' + wheel_type + '/' + batch_num
-            if not os.path.exists(target_detail):
-                os.makedirs(target_detail)
-            full_filename = os.path.join(path_to_watch, filename)
             if ACTIONS.get(action, "Unknown") == 'Created':
-                threading.Thread(target=parse_file_name,
-                                 args=(
-                                     full_filename, modelWhere, allOrOne, v_num_input, target_detail, pic_num)).start()
+                wheel_type = filename[int(filename.find('N')):int(filename.find('R'))]
+                batch_num = filename[int(filename.find('P')):int(filename.find('W'))]
+                target_path = target + '/' + wheel_type
+                target_detail = target + '/' + wheel_type + '/' + batch_num
+                full_filename = os.path.join(path_to_watch, filename)
+                if not os.path.exists(target_path):
+                    os.makedirs(target_path)
+                if not os.path.exists(target_detail) and len(os.listdir(target_path)) <= int(pic_num):
+                    os.makedirs(target_detail)
+                if len(os.listdir(target_path)) > int(pic_num):
+                    continue
+                parse_file_name(full_filename, modelWhere, allOrOne, v_num_input, target_detail, pic_num, target_path)
 
 
 def local_file(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num_input):
@@ -82,12 +86,16 @@ def local_file(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num_input
     for filename in fileList:
         wheel_type = filename[int(filename.find('N')):int(filename.find('R'))]
         batch_num = filename[int(filename.find('P')):int(filename.find('W'))]
+        target_path = target + '/' + wheel_type
         target_detail = target + '/' + wheel_type + '/' + batch_num
-        if not os.path.exists(target_detail):
-            os.makedirs(target_detail)
         full_filename = path_to_watch + '\\' + filename
-        threading.Timer(1, parse_file_name, args=(full_filename, modelWhere, allOrOne, v_num_input,
-                                                  target_detail, pic_num)).start()
+        if not os.path.exists(target_path):
+            os.makedirs(target_path)
+        if not os.path.exists(target_detail) and len(os.listdir(target_path)) <= int(pic_num):
+            os.makedirs(target_detail)
+        if len(os.listdir(target_path)) > int(pic_num):
+            continue
+        parse_file_name(full_filename, modelWhere, allOrOne, v_num_input, target_detail, pic_num, target_path)
 
 
 class Example(QWidget):
@@ -162,13 +170,15 @@ class Example(QWidget):
             QMessageBox.warning(self, '警告', '请填写正确的内容', QMessageBox.Cancel, QMessageBox.Cancel)
         else:
             if self.lineEdit_1.text() == '本地':
-                local_file(self.lineEdit.text(), self.lineEdit_btn.text(),
-                           self.lineEdit_1.text(), self.lineEdit_2.text(),
-                           self.lineEdit_3.text(), self.lineEdit_4.text())
+                threading.Thread(target=local_file,
+                                 args=(self.lineEdit.text(), self.lineEdit_btn.text(),
+                                       self.lineEdit_1.text(), self.lineEdit_2.text(),
+                                       self.lineEdit_3.text(), self.lineEdit_4.text())).start()
             else:
-                monitor_dir(self.lineEdit.text(), self.lineEdit_btn.text(),
-                            self.lineEdit_1.text(), self.lineEdit_2.text(),
-                            self.lineEdit_3.text(), self.lineEdit_4.text())
+                threading.Thread(target=monitor_dir,
+                                 args=(self.lineEdit.text(), self.lineEdit_btn.text(),
+                                       self.lineEdit_1.text(), self.lineEdit_2.text(),
+                                       self.lineEdit_3.text(), self.lineEdit_4.text())).start()
 
 
 if __name__ == '__main__':
