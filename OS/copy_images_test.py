@@ -66,7 +66,8 @@ def monitor_dir(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num_inpu
             None)
         for action, filename in results:
             wheel_type = filename[int(filename.find('N')):int(filename.find('R'))]
-            target_detail = target + '/' + wheel_type
+            batch_num = filename[int(filename.find('P')):int(filename.find('W'))]
+            target_detail = target + '/' + wheel_type + '/' + batch_num
             if not os.path.exists(target_detail):
                 os.makedirs(target_detail)
             full_filename = os.path.join(path_to_watch, filename)
@@ -80,7 +81,8 @@ def local_file(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num_input
     fileList = os.listdir(path_to_watch)
     for filename in fileList:
         wheel_type = filename[int(filename.find('N')):int(filename.find('R'))]
-        target_detail = target + '/' + wheel_type
+        batch_num = filename[int(filename.find('P')):int(filename.find('W'))]
+        target_detail = target + '/' + wheel_type + '/' + batch_num
         if not os.path.exists(target_detail):
             os.makedirs(target_detail)
         full_filename = path_to_watch + '\\' + filename
