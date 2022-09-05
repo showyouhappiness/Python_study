@@ -11,36 +11,25 @@ import win32file
 import win32con
 
 
-def parse_file_name(copied, target, modelWhere, pic_num, allOrOne, v_num):
-    print(copied, target, modelWhere, pic_num, allOrOne, v_num)
-    if os.path.exists(copied):
+def parse_file_name(copied, modelWhere, allOrOne, v_num_input, target_detail, pic_num):
+    v_num_list = v_num_input.split(',')
+    v_num = copied[int(copied.find('V')) + 1:int(copied.find('I'))]
+    if len(os.listdir(target_detail)) > int(pic_num) - 1:
+        return
+    if os.path.exists(copied) and v_num in v_num_list:
         (filepath, tempFilename) = os.path.split(copied)
-        wheel_type = tempFilename[int(tempFilename.find('N')):int(tempFilename.find('R'))]
-        target_detail = target + '/' + wheel_type
-        if not os.path.exists(target_detail):
-            os.makedirs(target_detail)
-        if len(os.listdir(target_detail)) > int(pic_num) - 1:
+        if allOrOne == '一张' and 'I1A' not in tempFilename:
             return
-        if allOrOne == '全部':
-            with open(copied, 'rb') as readStream:
-                container_master = readStream.read()
-                target_detail_path = os.path.join(target_detail, tempFilename)
-                with open(target_detail_path, 'wb') as writeStream:
-                    writeStream.write(container_master)
-            if modelWhere == '本地':
-                os.remove(copied)
-        else:
-            if 'I1A' in tempFilename:
-                with open(copied, 'rb') as readStream:
-                    container_master = readStream.read()
-                    target_detail_path = os.path.join(target_detail, tempFilename)
-                    with open(target_detail_path, 'wb') as writeStream:
-                        writeStream.write(container_master)
-                    if modelWhere == '本地':
-                        os.remove(copied)
+        with open(copied, 'rb') as readStream:
+            container_master = readStream.read()
+            target_detail_path = os.path.join(target_detail, tempFilename)
+            with open(target_detail_path, 'wb') as writeStream:
+                writeStream.write(container_master)
+        if modelWhere == '本地':
+            os.remove(copied)
 
 
-def monitor_dir(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num):
+def monitor_dir(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num_input):
     ACTIONS = {
         1: "Created",
         2: "Deleted",
@@ -76,20 +65,27 @@ def monitor_dir(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num):
             None,
             None)
         for action, filename in results:
+            wheel_type = filename[int(filename.find('N')):int(filename.find('R'))]
+            target_detail = target + '/' + wheel_type
+            if not os.path.exists(target_detail):
+                os.makedirs(target_detail)
             full_filename = os.path.join(path_to_watch, filename)
-            print(full_filename, ACTIONS.get(action, "Unknown"))
             if ACTIONS.get(action, "Unknown") == 'Created':
                 threading.Thread(target=parse_file_name,
-                                 args=(full_filename, target, modelWhere, pic_num, allOrOne, v_num)).start()
+                                 args=(
+                                     full_filename, modelWhere, allOrOne, v_num_input, target_detail, pic_num)).start()
 
 
-def local_file(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num):
+def local_file(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num_input):
     fileList = os.listdir(path_to_watch)
-    for result_file in fileList:
-        full_filename = path_to_watch + '\\' + result_file
-        threading.Timer(1, parse_file_name, args=(full_filename, target, modelWhere, pic_num, allOrOne, v_num)).start()
-        # threading.Thread(target=parse_file_name,
-        #                  args=(full_filename, target, modelWhere, pic_num, allOrOne, v_num)).start()
+    for filename in fileList:
+        wheel_type = filename[int(filename.find('N')):int(filename.find('R'))]
+        target_detail = target + '/' + wheel_type
+        if not os.path.exists(target_detail):
+            os.makedirs(target_detail)
+        full_filename = path_to_watch + '\\' + filename
+        threading.Timer(1, parse_file_name, args=(full_filename, modelWhere, allOrOne, v_num_input,
+                                                  target_detail, pic_num)).start()
 
 
 class Example(QWidget):
