@@ -11,7 +11,8 @@ import win32file
 import win32con
 
 
-def parse_file_name(copied, target, modelWhere, pic_num, allOrOne):
+def parse_file_name(copied, target, modelWhere, pic_num, allOrOne, v_num):
+    print(copied, target, modelWhere, pic_num, allOrOne, v_num)
     if os.path.exists(copied):
         (filepath, tempFilename) = os.path.split(copied)
         wheel_type = tempFilename[int(tempFilename.find('N')):int(tempFilename.find('R'))]
@@ -20,7 +21,6 @@ def parse_file_name(copied, target, modelWhere, pic_num, allOrOne):
             os.makedirs(target_detail)
         if len(os.listdir(target_detail)) > int(pic_num) - 1:
             return
-        time.sleep(1)
         if allOrOne == '全部':
             with open(copied, 'rb') as readStream:
                 container_master = readStream.read()
@@ -28,7 +28,6 @@ def parse_file_name(copied, target, modelWhere, pic_num, allOrOne):
                 with open(target_detail_path, 'wb') as writeStream:
                     writeStream.write(container_master)
             if modelWhere == '本地':
-                time.sleep(0.5)
                 os.remove(copied)
         else:
             if 'I1A' in tempFilename:
@@ -38,11 +37,10 @@ def parse_file_name(copied, target, modelWhere, pic_num, allOrOne):
                     with open(target_detail_path, 'wb') as writeStream:
                         writeStream.write(container_master)
                     if modelWhere == '本地':
-                        time.sleep(0.5)
                         os.remove(copied)
 
 
-def monitor_dir(path_to_watch, target, modelWhere, pic_num, allOrOne):
+def monitor_dir(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num):
     ACTIONS = {
         1: "Created",
         2: "Deleted",
@@ -80,9 +78,18 @@ def monitor_dir(path_to_watch, target, modelWhere, pic_num, allOrOne):
         for action, filename in results:
             full_filename = os.path.join(path_to_watch, filename)
             print(full_filename, ACTIONS.get(action, "Unknown"))
-            # parse_file_name(full_filename, target, modelWhere, pic_num, allOrOne)
-            threading.Thread(target=parse_file_name,
-                             args=(full_filename, target, modelWhere, pic_num, allOrOne)).start()
+            if ACTIONS.get(action, "Unknown") == 'Created':
+                threading.Thread(target=parse_file_name,
+                                 args=(full_filename, target, modelWhere, pic_num, allOrOne, v_num)).start()
+
+
+def local_file(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num):
+    fileList = os.listdir(path_to_watch)
+    for result_file in fileList:
+        full_filename = path_to_watch + '\\' + result_file
+        threading.Timer(1, parse_file_name, args=(full_filename, target, modelWhere, pic_num, allOrOne, v_num)).start()
+        # threading.Thread(target=parse_file_name,
+        #                  args=(full_filename, target, modelWhere, pic_num, allOrOne, v_num)).start()
 
 
 class Example(QWidget):
@@ -124,8 +131,14 @@ class Example(QWidget):
         self.lineEdit_3.setGeometry(QRect(190, 230, 221, 30))
         self.lineEdit_3.setFont(QFont('Arial', 14))
 
+        self.label4 = QLabel('请输入保存步数', self)
+        self.label4.setGeometry(QRect(70, 270, 145, 30))
+        self.lineEdit_4 = QLineEdit(self)
+        self.lineEdit_4.setGeometry(QRect(190, 270, 221, 30))
+        self.lineEdit_4.setFont(QFont('Arial', 14))
+
         self.btn_2 = QPushButton('确定', self)
-        self.btn_2.setGeometry(QRect(190, 270, 111, 30))
+        self.btn_2.setGeometry(QRect(190, 310, 111, 30))
 
         self.btn.clicked.connect(self.openFile)
         self.btn_1.clicked.connect(self.saveFile)
@@ -150,9 +163,14 @@ class Example(QWidget):
         elif (self.lineEdit_1.text() not in ['产线', '本地']) or (self.lineEdit_3.text() not in ['全部', '一张']):
             QMessageBox.warning(self, '警告', '请填写正确的内容', QMessageBox.Cancel, QMessageBox.Cancel)
         else:
-            threading.Thread(target=monitor_dir, args=(self.lineEdit.text(), self.lineEdit_btn.text(),
-                                                       self.lineEdit_1.text(), self.lineEdit_2.text(),
-                                                       self.lineEdit_3.text())).start()
+            if self.lineEdit_1.text() == '本地':
+                local_file(self.lineEdit.text(), self.lineEdit_btn.text(),
+                           self.lineEdit_1.text(), self.lineEdit_2.text(),
+                           self.lineEdit_3.text(), self.lineEdit_4.text())
+            else:
+                monitor_dir(self.lineEdit.text(), self.lineEdit_btn.text(),
+                            self.lineEdit_1.text(), self.lineEdit_2.text(),
+                            self.lineEdit_3.text(), self.lineEdit_4.text())
 
 
 if __name__ == '__main__':
