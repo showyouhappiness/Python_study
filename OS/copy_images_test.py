@@ -1,5 +1,6 @@
 import sys
 import os, shutil
+import time
 
 from PyQt5.QtWidgets import QWidget, QApplication, QPushButton, QFileDialog, QLineEdit, QLabel, QMessageBox
 from PyQt5.QtCore import QRect
@@ -11,7 +12,6 @@ import win32con
 
 
 def parse_file_name(copied, modelWhere, allOrOne, v_num_input, target_detail, pic_num, target_path):
-    print(len(os.listdir(target_path)), int(pic_num))
     if not os.path.exists(target_detail):
         os.makedirs(target_detail)
     v_num_list = v_num_input.split(',')
@@ -67,35 +67,41 @@ def monitor_dir(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num_inpu
 
         for action, filename in results:
             if ACTIONS.get(action, "Unknown") == 'Created':
-                wheel_type = filename[int(filename.find('N')):int(filename.find('R'))]
-                batch_num = filename[int(filename.find('P')):int(filename.find('W'))]
-                target_path = target + '/' + wheel_type
-                target_detail = target + '/' + wheel_type + '/' + batch_num
-                full_filename = os.path.join(path_to_watch, filename)
-                if not os.path.exists(target_path):
-                    os.makedirs(target_path)
-                if not os.path.exists(target_detail) and len(os.listdir(target_path)) <= int(pic_num):
-                    os.makedirs(target_detail)
-                if len(os.listdir(target_path)) > int(pic_num):
-                    continue
-                parse_file_name(full_filename, modelWhere, allOrOne, v_num_input, target_detail, pic_num, target_path)
+                thread = threading.Thread(target=creat_file, args=(
+                                        filename, target, path_to_watch, pic_num, modelWhere, allOrOne, v_num_input))
+                thread.start()
+                thread.join()
+
+
+def creat_file(filename, target, path_to_watch, pic_num, modelWhere, allOrOne, v_num_input):
+    wheel_type = filename[int(filename.find('N')):int(filename.find('R'))]
+    batch_num = filename[int(filename.find('P')):int(filename.find('W'))]
+    target_path = target + '/' + wheel_type
+    target_detail = target + '/' + wheel_type + '/' + batch_num
+    full_filename = os.path.join(path_to_watch, filename)
+    if not os.path.exists(target_path):
+        os.makedirs(target_path)
+    if not os.path.exists(target_detail) and len(os.listdir(target_path)) <= int(pic_num):
+        os.makedirs(target_detail)
+    if len(os.listdir(target_path)) > int(pic_num):
+        print(os.path.isdir(target_detail))
+        if os.path.isdir(target_detail):
+            try:
+                time.sleep(0.5)
+                os.rmdir(target_detail)
+            except OSError as err:
+                print(err)
+        return
+    parse_file_name(full_filename, modelWhere, allOrOne, v_num_input, target_detail, pic_num, target_path)
 
 
 def local_file(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num_input):
     fileList = os.listdir(path_to_watch)
     for filename in fileList:
-        wheel_type = filename[int(filename.find('N')):int(filename.find('R'))]
-        batch_num = filename[int(filename.find('P')):int(filename.find('W'))]
-        target_path = target + '/' + wheel_type
-        target_detail = target + '/' + wheel_type + '/' + batch_num
-        full_filename = path_to_watch + '\\' + filename
-        if not os.path.exists(target_path):
-            os.makedirs(target_path)
-        if not os.path.exists(target_detail) and len(os.listdir(target_path)) <= int(pic_num):
-            os.makedirs(target_detail)
-        if len(os.listdir(target_path)) > int(pic_num):
-            continue
-        parse_file_name(full_filename, modelWhere, allOrOne, v_num_input, target_detail, pic_num, target_path)
+        thread = threading.Thread(target=creat_file,
+                                  args=(filename, target, path_to_watch, pic_num, modelWhere, allOrOne, v_num_input))
+        thread.start()
+        thread.join()
 
 
 class Example(QWidget):
@@ -170,15 +176,16 @@ class Example(QWidget):
             QMessageBox.warning(self, '警告', '请填写正确的内容', QMessageBox.Cancel, QMessageBox.Cancel)
         else:
             if self.lineEdit_1.text() == '本地':
-                threading.Thread(target=local_file,
-                                 args=(self.lineEdit.text(), self.lineEdit_btn.text(),
-                                       self.lineEdit_1.text(), self.lineEdit_2.text(),
-                                       self.lineEdit_3.text(), self.lineEdit_4.text())).start()
+                if self.lineEdit_5.text() == '':
+                    threading.Thread(target=local_file,
+                                     args=(self.lineEdit.text(), self.lineEdit_btn.text(),
+                                           self.lineEdit_1.text(), self.lineEdit_2.text(),
+                                           self.lineEdit_3.text(), self.lineEdit_4.text())).start()
             else:
                 threading.Thread(target=monitor_dir,
                                  args=(self.lineEdit.text(), self.lineEdit_btn.text(),
                                        self.lineEdit_1.text(), self.lineEdit_2.text(),
-                                       self.lineEdit_3.text(), self.lineEdit_4.text())).start()
+                                       self.lineEdit_3.text(), self.lineEdit_4.text(), self.lineEdit_5.text())).start()
 
 
 if __name__ == '__main__':
