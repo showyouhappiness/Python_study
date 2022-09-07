@@ -1,35 +1,58 @@
+import os
+import shutil
 import sys
-import os, shutil
-import time
+import threading
 
-from PyQt5.QtWidgets import QWidget, QApplication, QPushButton, QFileDialog, QLineEdit, QLabel, QMessageBox
+import win32con
+import win32file
 from PyQt5.QtCore import QRect
 from PyQt5.QtGui import QFont
-
-import threading
-import win32file
-import win32con
+from PyQt5.QtWidgets import QWidget, QApplication, QPushButton, QFileDialog, QLineEdit, QLabel, QMessageBox
 
 
-def parse_file_name(copied, modelWhere, allOrOne, v_num_input, target_detail, pic_num, target_path):
-    if not os.path.exists(target_detail):
-        os.makedirs(target_detail)
+def parse_file_name(copied, modelWhere, allOrOne, v_num_input, target_detail):
     v_num_list = v_num_input.split(',')
     v_num = copied[int(copied.find('V')) + 1:int(copied.find('I'))]
     if os.path.exists(copied) and v_num in v_num_list:
+        if not os.path.exists(target_detail):
+            os.makedirs(target_detail)
         (filepath, tempFilename) = os.path.split(copied)
         target_detail_path = os.path.join(target_detail, tempFilename)
         if modelWhere == '本地':
-            if allOrOne == '一张' and 'I1A' not in tempFilename:
-                return
-            shutil.copy(copied, target_detail_path)
-            # print('from', copied, 'to', target_detail_path)
+            if allOrOne == '一张':
+                v_num_v = 'V' + str(v_num)
+                download_image = os.listdir(target_detail)
+                for images in download_image:
+                    if v_num_v in images:
+                        return
+            shutil.move(copied, target_detail_path)
+            print('from', copied, 'move to', target_detail_path)
         else:
             shutil.copy(copied, target_detail_path)
-            # print('from', copied, 'to', target_detail_path)
+            print('from', copied, 'copy to', target_detail_path)
 
 
-def monitor_dir(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num_input):
+def creat_file(filename, target, path_to_watch, pic_num, modelWhere, allOrOne, v_num_input):
+    wheel_type = filename[int(filename.find('N')):int(filename.find('R'))]
+    batch_num = filename[int(filename.find('P')):int(filename.find('W'))]
+    target_path = target + '/' + wheel_type
+    target_detail = target + '/' + wheel_type + '/' + batch_num
+    full_filename = os.path.join(path_to_watch, filename)
+    if not os.path.exists(target_path):
+        os.makedirs(target_path)
+    if not os.path.exists(target_detail) and len(os.listdir(target_path)) <= int(pic_num):
+        os.makedirs(target_detail)
+    if len(os.listdir(target_path)) > int(pic_num):
+        if os.path.isdir(target_detail):
+            try:
+                os.rmdir(target_detail)
+            except OSError as err:
+                print(err)
+        return
+    parse_file_name(full_filename, modelWhere, allOrOne, v_num_input, target_detail)
+
+
+def monitor_dir(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num_input, wheel_type_list):
     ACTIONS = {
         1: "Created",
         2: "Deleted",
@@ -65,43 +88,30 @@ def monitor_dir(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num_inpu
             None,
             None)
 
-        for action, filename in results:
-            if ACTIONS.get(action, "Unknown") == 'Created':
-                thread = threading.Thread(target=creat_file, args=(
-                                        filename, target, path_to_watch, pic_num, modelWhere, allOrOne, v_num_input))
+        wheel_type_list_detail = wheel_type_list.split(',')
+        for wheel_type in wheel_type_list_detail:
+            for action, filename in results:
+                if ACTIONS.get(action, "Unknown") == 'Created':
+                    if wheel_type != '' and wheel_type not in filename:
+                        continue
+                thread = threading.Thread(target=creat_file, args=(filename, target, path_to_watch, pic_num, modelWhere,
+                                                                   allOrOne, v_num_input))
                 thread.start()
                 thread.join()
 
 
-def creat_file(filename, target, path_to_watch, pic_num, modelWhere, allOrOne, v_num_input):
-    wheel_type = filename[int(filename.find('N')):int(filename.find('R'))]
-    batch_num = filename[int(filename.find('P')):int(filename.find('W'))]
-    target_path = target + '/' + wheel_type
-    target_detail = target + '/' + wheel_type + '/' + batch_num
-    full_filename = os.path.join(path_to_watch, filename)
-    if not os.path.exists(target_path):
-        os.makedirs(target_path)
-    if not os.path.exists(target_detail) and len(os.listdir(target_path)) <= int(pic_num):
-        os.makedirs(target_detail)
-    if len(os.listdir(target_path)) > int(pic_num):
-        print(os.path.isdir(target_detail))
-        if os.path.isdir(target_detail):
-            try:
-                time.sleep(0.5)
-                os.rmdir(target_detail)
-            except OSError as err:
-                print(err)
-        return
-    parse_file_name(full_filename, modelWhere, allOrOne, v_num_input, target_detail, pic_num, target_path)
-
-
-def local_file(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num_input):
+def local_file(path_to_watch, target, modelWhere, pic_num, allOrOne, v_num_input, wheel_type_list):
     fileList = os.listdir(path_to_watch)
-    for filename in fileList:
-        thread = threading.Thread(target=creat_file,
-                                  args=(filename, target, path_to_watch, pic_num, modelWhere, allOrOne, v_num_input))
-        thread.start()
-        thread.join()
+    wheel_type_list_detail = wheel_type_list.split(',')
+    for wheel_type in wheel_type_list_detail:
+        for filename in fileList:
+            if wheel_type != '' and wheel_type not in filename:
+                continue
+            thread = threading.Thread(target=creat_file,
+                                      args=(
+                                          filename, target, path_to_watch, pic_num, modelWhere, allOrOne, v_num_input))
+            thread.start()
+            thread.join()
 
 
 class Example(QWidget):
@@ -110,7 +120,7 @@ class Example(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setGeometry(300, 300, 500, 370)
+        self.setGeometry(730, 300, 500, 450)
         self.setWindowTitle('复制文件小工具')
 
         self.btn = QPushButton('请选择复制地址', self)
@@ -149,8 +159,14 @@ class Example(QWidget):
         self.lineEdit_4.setGeometry(QRect(190, 270, 221, 30))
         self.lineEdit_4.setFont(QFont('Arial', 14))
 
+        self.label5 = QLabel('请输入过滤型号', self)
+        self.label5.setGeometry(QRect(70, 310, 145, 30))
+        self.lineEdit_5 = QLineEdit(self)
+        self.lineEdit_5.setGeometry(QRect(190, 310, 221, 30))
+        self.lineEdit_5.setFont(QFont('Arial', 14))
+
         self.btn_2 = QPushButton('确定', self)
-        self.btn_2.setGeometry(QRect(190, 310, 111, 30))
+        self.btn_2.setGeometry(QRect(190, 350, 111, 30))
 
         self.btn.clicked.connect(self.openFile)
         self.btn_1.clicked.connect(self.saveFile)
@@ -176,16 +192,17 @@ class Example(QWidget):
             QMessageBox.warning(self, '警告', '请填写正确的内容', QMessageBox.Cancel, QMessageBox.Cancel)
         else:
             if self.lineEdit_1.text() == '本地':
-                if self.lineEdit_5.text() == '':
-                    threading.Thread(target=local_file,
-                                     args=(self.lineEdit.text(), self.lineEdit_btn.text(),
-                                           self.lineEdit_1.text(), self.lineEdit_2.text(),
-                                           self.lineEdit_3.text(), self.lineEdit_4.text())).start()
+                threading.Thread(target=local_file,
+                                 args=(self.lineEdit.text(), self.lineEdit_btn.text(),
+                                       self.lineEdit_1.text(), self.lineEdit_2.text(),
+                                       self.lineEdit_3.text(), self.lineEdit_4.text(),
+                                       self.lineEdit_5.text())).start()
             else:
                 threading.Thread(target=monitor_dir,
                                  args=(self.lineEdit.text(), self.lineEdit_btn.text(),
                                        self.lineEdit_1.text(), self.lineEdit_2.text(),
-                                       self.lineEdit_3.text(), self.lineEdit_4.text(), self.lineEdit_5.text())).start()
+                                       self.lineEdit_3.text(), self.lineEdit_4.text(),
+                                       self.lineEdit_5.text())).start()
 
 
 if __name__ == '__main__':
