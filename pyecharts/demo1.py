@@ -22,25 +22,28 @@ i = 0
 page = Page(layout=Page.DraggablePageLayout)
 
 
-def echarts(title, yAxis, xAxis, index, classify):
+def echarts(title, yAxis1, yAxis2, xAxis, index, classify1, classify2):
     index = Bar()
     index.add_xaxis(xAxis)
-    index.add_yaxis(classify, yAxis)
+    index.add_yaxis(classify1, yAxis1)
+    index.add_yaxis(classify2, yAxis2)
     index.set_global_opts(title_opts=opts.TitleOpts(title=title))
     page.add(index)
 
 
-def defect_10(key, value, index, classify):
-    bins = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160]
-    cats = pd.cut(value, bins)
-    echarts(key, pd.value_counts(cats).tolist(), bins, str(index), classify)
+def defect_10(key, value, value2, index, classify, classify2):
+    bins = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 165]
+    yAxis1 = pd.value_counts(pd.cut(value, bins)).tolist()
+    yAxis2 = pd.value_counts(pd.cut(value2, bins)).tolist()
+    echarts(key, yAxis1, yAxis2, bins, str(index), classify, classify2)
     # print(key, '\n', pd.value_counts(cats))  # 按区间计数
 
 
-def defect_5(key, value, index, classify):
-    bins = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80]
-    cats = pd.cut(value, bins)
-    echarts(key, pd.value_counts(cats).tolist(), bins, str(index), classify)
+def defect_5(key, value, value2, index, classify, classify2):
+    bins = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85]
+    yAxis1 = pd.value_counts(pd.cut(value, bins)).tolist()
+    yAxis2 = pd.value_counts(pd.cut(value2, bins)).tolist()
+    echarts(key, yAxis1, yAxis2, bins, str(index), classify, classify2)
     # print(key, '\n', pd.value_counts(cats))  # 按区间计数
 
 
@@ -80,17 +83,16 @@ for data in data6:
 for k1, v1 in all_defect_dict_OK.items():
     i += 1
     defect_data = k1.split('_')
-    if defect_data[-2] in ['裂纹', '裂纹2', '浇不足', '缩松2']:
-        defect_10(k1, v1, i, 'AI过检')
+    if k1 in all_defect_dict_Fail.keys():
+        v2 = all_defect_dict_Fail.get(k1)
+        if defect_data[-1] in ['裂纹', '裂纹2', '浇不足', '缩松2']:
+            defect_10(k1, v1, v2, i, 'AI过检', '人工判废')
+        else:
+            defect_5(k1, v1, v2, i, 'AI过检', '人工判废')
     else:
-        defect_5(k1, v1, i, 'AI过检')
-
-for k2, v2 in all_defect_dict_Fail.items():
-    i += 1
-    defect_data = k2.split('_')
-    if defect_data[-2] in ['裂纹', '裂纹2', '浇不足', '缩松2']:
-        defect_10(k2, v2, i, '人工废品')
-    else:
-        defect_5(k2, v2, i, '人工废品')
+        if defect_data[-1] in ['裂纹', '裂纹2', '浇不足', '缩松2']:
+            defect_10(k1, v1, [], i, 'AI过检', '人工判废')
+        else:
+            defect_5(k1, v1, [], i, 'AI过检', '人工判废')
 
 page.render("result.html")
