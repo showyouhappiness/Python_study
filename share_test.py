@@ -9,7 +9,7 @@ import win32file
 from queue import Queue
 
 from grpc_server.module import type_define
-from log import f_log
+from OS.log import f_log
 
 
 def monitor_picture(path_to_watch):

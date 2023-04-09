@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Django</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+{% block content %}
+    <ul>
+        <li>item</li>
+        <li>appid</li>
+        <li>service_id</li>
+        <li>service_name</li>
+        <li>amount</li>
+        <li>id</li>
+        <li>asset_type.service_id</li>
+        <li>data_time</li>
+        <li>delete</li>
+    </ul>
+    {% for item in data %}
+    <ul>
+        <li title="{{ item }}">{{item}}</li>
+        <li title="{{ item.appid }}">{{ item.appid }}</li>
+        <li title="{{ item.service_id }}">{{ item.service_id }}</li>
+        <li title="{{ item.service_name }}">{{ item.service_name }}</li>
+        <li title="{{ item.service.amount }}">{{ item.service.amount }}</li>
+        <li title="{{ item.service.id }}">{{ item.service.id }}</li>
+        <li title="{{ item.service.service_id }}">{{ item.service.service_id }}</li>
+        <li title="{{ item.data_time }}">{{ item.data_time }}</li>
+        <li><a href="/service/delete_detail/?id={{item.id}}">delete</a></li>
+<!--        <li><a href="?id={{item.id}}">delete</a></li>-->
+    </ul>
+    {% endfor %}
+{% endblock %}
+
+</body>
+</html>

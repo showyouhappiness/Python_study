@@ -1,5 +1,5 @@
 import os
-from log import f_log
+from OS.log import f_log
 
 
 def findAllFile(base):

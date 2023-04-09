@@ -73,4 +73,4 @@ def watcher(log_path):
 
 
 if __name__ == '__main__':
-    watcher("test/2.txt")
+    watcher("./2.txt")

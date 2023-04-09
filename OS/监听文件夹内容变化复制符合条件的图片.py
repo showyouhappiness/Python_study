@@ -1,21 +1,10 @@
 import os
 import sys
-import threading
-import time
 import traceback
-import datetime
-import cv2
-import numpy as np
 
-import ImageStorage
-import conf
-import algorithmn
-import db_wrapper
 import monitor
 from queue import Queue
-from log import f_log
-from utils import open_image
-import kafkaProducer
+from OS.log import f_log
 
 
 def parse_file_name(copied, target):

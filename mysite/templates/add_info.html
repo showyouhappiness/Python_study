@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Django</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+
+<div class="tab-content">
+    <form action="/service/add_detail/" method="post">
+        {% csrf_token %} <!-- 保护表单免受跨站请求伪造攻击，POST 方法提交的表格，必须有此标签。 -->
+        <label for="Appid">Enter input Appid:</label>
+        <input type="text" name="Appid" id="Appid">
+        <label for="Service_id">Enter input Service_id:</label>
+        <input type="text" name="Service_id" id="Service_id">
+        <label for="Service_name">Enter input Service_name:</label>
+        <input type="text" name="Service_name" id="Service_name">
+        <label for="Appid_service_max">Enter input Appid_service_max:</label>
+        <input type="text" name="Appid_service_max" id="Appid_service_max">
+        <label for="Appid_max">Enter input Appid_max:</label>
+        <input type="text" name="Appid_max" id="Appid_max">
+        <label for="Service_id_all">Enter input Service_id_all:</label>
+        <input type="text" name="Service_id_all" id="Service_id_all">
+        <label for="Appid_service_percent">Enter input Appid_service_percent:</label>
+        <input type="text" name="Appid_service_percent" id="Appid_service_percent">
+        <label for="Service_all_percent">Enter input Service_all_percent:</label>
+        <input type="text" name="Service_all_percent" id="Service_all_percent">
+        <label for="Service_total_cpu">Enter input Service_total_cpu:</label>
+        <input type="text" name="Service_total_cpu" id="Service_total_cpu">
+        <label for="Service_total_gpu">Enter input Service_total_gpu:</label>
+        <input type="text" name="Service_total_gpu" id="Service_total_gpu">
+        <label for="Service_total_num">Enter input Service_total_num:</label>
+        <input type="text" name="Service_total_num" id="Service_total_num">
+        <label for="Resource_type">Enter input Resource_type:</label>
+        <input type="text" name="Resource_type" id="Resource_type">
+        <label for="Need_cpu">Enter input Need_cpu:</label>
+        <input type="text" name="Need_cpu" id="Need_cpu">
+        <label for="Need_gpu">Enter input Need_gpu:</label>
+        <input type="text" name="Need_gpu" id="Need_gpu">
+        <label for="Need_num">Enter input Need_num:</label>
+        <input type="text" name="Need_num" id="Need_num">
+        <label for="Amount">Enter input Amount:</label>
+        <input type="text" name="Amount" id="Amount">
+        <label for="model">Enter input model:</label>
+        <input type="text" name="model" id="model">
+        <label for="Data_time">Enter input Data_time:</label>
+        <input type="text" name="Data_time" id="Data_time">
+
+        <button type="submit">Submit</button>
+
+    </form>
+</div>
+</body>
+</html>

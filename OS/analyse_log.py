@@ -15,7 +15,6 @@ def getbarcode():
 
 def analyse_log(src_file, tar_file):
     knuckle_id = ""
-    ft = ""
     lt = ""
     first_time = ""
 
@@ -28,13 +27,12 @@ def analyse_log(src_file, tar_file):
                 if time[-5] != knuckle_id:
                     if lt and barCode and int((last_time - first_time).seconds) > 5:
                         print(first_time, barCode[:-1], (last_time - first_time).seconds)
-                        container = "\nfirst_time：" + str(first_time) + "barCode: " + barCode[:-1] + " cost time: " + str(
-                            (last_time - first_time).seconds)
+                        container = "\nfirst_time：" + str(first_time) + " barCode: " + barCode[:-1] + " cost time: " +\
+                                    str((last_time - first_time).seconds)
                         target_file.write(container)
                     knuckle_id = time[-5]
                     barCode = barCodeDict.get(knuckle_id)
-                    ft = time[2] + " " + time[3][:8]
-                    first_time = datetime.datetime.strptime(ft, '%Y-%m-%d %H:%M:%S')
+                    first_time = datetime.datetime.strptime(time[2] + " " + time[3][:8], '%Y-%m-%d %H:%M:%S')
                 else:
                     lt = time[2] + " " + time[3][:8]
                     last_time = datetime.datetime.strptime(lt, '%Y-%m-%d %H:%M:%S')

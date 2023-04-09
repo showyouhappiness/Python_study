@@ -159,7 +159,7 @@ class Example(QWidget):
         self.lineEdit_4.setGeometry(QRect(190, 270, 221, 30))
         self.lineEdit_4.setFont(QFont('Arial', 14))
 
-        self.label5 = QLabel('请输入过滤型号', self)
+        self.label5 = QLabel('请输入所需型号', self)
         self.label5.setGeometry(QRect(70, 310, 145, 30))
         self.lineEdit_5 = QLineEdit(self)
         self.lineEdit_5.setGeometry(QRect(190, 310, 221, 30))

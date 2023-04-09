@@ -32,7 +32,9 @@ def echarts(title, yAxis1, yAxis2, xAxis, index, classify1, classify2):
 
 
 def defect_10(key, value, value2, index, classify, classify2):
-    bins = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 165]
+    # for i in range(10, 180, 10):
+    #     bins.append(i)
+    bins = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170]
     yAxis1 = pd.value_counts(pd.cut(value, bins)).tolist()
     yAxis2 = pd.value_counts(pd.cut(value2, bins)).tolist()
     echarts(key, yAxis1, yAxis2, bins, str(index), classify, classify2)

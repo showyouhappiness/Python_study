@@ -1,8 +1,10 @@
 import os
+import shutil
 
+import conf
+from OS.log import f_log
 import win32file
 import win32con
-from OS.log import f_log
 
 
 def monitor_dir(path_to_watch):
@@ -41,10 +43,15 @@ def monitor_dir(path_to_watch):
             None,
             None)
         for action, filename in results:
-            full_filename = os.path.join(path_to_watch, filename)
-            f_log.LOGW('{} {}'.format(ACTIONS.get(action, "Unknown"), full_filename))
-            if ACTIONS.get(action, "Unknown") == 'Created' or ACTIONS.get(action, "Unknown") == 'Updated':
-                print(full_filename)
+            f_log.LOGW('{} {}'.format(ACTIONS.get(action, "Unknown"), filename))
+            if conf.wheel_type in filename and ACTIONS.get(action, "Unknown") == 'Created':
+                full_filename = os.path.join(path_to_watch, filename)
+                wheel_step = "V" + conf.step
+                if wheel_step in filename:
+                    result_path = os.path.join(conf.save_image_path, wheel_step)
+                    if not os.path.exists(result_path):
+                        os.makedirs(result_path)
+                    shutil.copy(full_filename, result_path)
 
 
-monitor_dir(r'X:\main')
+monitor_dir(conf.original_path)
