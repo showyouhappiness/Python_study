@@ -85,3 +85,13 @@ def deleteUser(request):
         models.resource.objects.filter(id=Appid).delete()
         # 重定向到get页面
         return redirect('/service/service_detail/')
+
+
+# 改变用户信息
+def editUser(request, id):
+    if request.method == 'GET':
+        row_object = models.resource.objects.filter(id=id).first()
+        return render(request, 'edit.html', {'row_object': row_object})
+
+    title = request.POST.get("title")
+    models.resource.objects.filter(id=id).update(title=title)

@@ -30,6 +30,7 @@
         <li title="{{ item.service.service_id }}">{{ item.service.service_id }}</li>
         <li title="{{ item.data_time }}">{{ item.data_time }}</li>
         <li><a href="/service/delete_detail/?id={{item.id}}">delete</a></li>
+        <li><a href="/service/delete_detail/{{item.id}}">edit</a></li>
 <!--        <li><a href="?id={{item.id}}">delete</a></li>-->
     </ul>
     {% endfor %}
