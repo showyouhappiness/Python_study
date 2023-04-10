@@ -14,7 +14,7 @@ class asset_type(models.Model):
 # Create your models here.
 class resource(models.Model):
     appid = models.CharField(max_length=100)
-    service = models.ForeignKey(asset_type, on_delete=models.CASCADE, to_fields='service_id')
+    service = models.ForeignKey(asset_type, on_delete=models.CASCADE, to_field='service_id')
     service_name = models.CharField(max_length=100)
     appid_service_max = models.IntegerField()
     appid_max = models.IntegerField()

@@ -44,7 +44,8 @@ def addUser(request):
         model = request.POST.get('model')
 
         # 关联表添加数据
-        models.asset_type.objects.create(service_id=Service_id, id=Appid, amount=Amount, model=model)
+        if not models.asset_type.objects.filter(service_id=Service_id):
+            models.asset_type.objects.create(service_id=Service_id, id=Appid, amount=Amount, model=model)
 
         # 查询数据库并添加相应的数据
         models.resource.objects.create(appid=Appid, service_id=Service_id, service_name=Service_name,
