@@ -89,7 +89,7 @@ def deleteUser(request):
 
 
 # 改变用户信息
-def editUser(request, id):
+def editDetail(request, id):
     if request.method == 'GET':
         row_object = models.resource.objects.filter(id=id).first()
         return render(request, 'edit.html', {'row_object': row_object})
