@@ -1,4 +1,6 @@
 """
+项目运行在 WSGI 兼容的Web服务器上的入口
+
 WSGI config for mysite project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
