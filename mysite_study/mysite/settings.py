@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',  # 消息框架
     'django.contrib.staticfiles',  # 管理静态文件的框架
     'livereload',  # 页面自动更新，因为配置原因目前用不了
-    'polls',
+    'polls.apps.PollsConfig',
 ]
 
 MIDDLEWARE = [
@@ -60,7 +60,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # 静态文件路径
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [project_path],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
