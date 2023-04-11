@@ -2,8 +2,8 @@ import os
 import glob
 from datetime import datetime
 
-signal_loss = ['set signal_id: 4', 'RETURNING casting_id:', 'set signal_id: 5', 'reset signal_id 5']
-normal = ['set signal_id: 4', 'RETURNING casting_id:', 'set signal_id: 5', 'reset signal_id 5', 'reset signal_id 4']
+normal = ['set signal_id: 4', 'RETURNING casting_id:', 'set signal_id: 5', 'reset signal_id 5',
+          'set signal_id: 4', 'set signal_id: 6', 'reset signal_id 6']
 unusual = []
 
 
@@ -23,8 +23,8 @@ def analyse_log(src_file, casting_id='', cost_time=''):
                 if unusual == normal and len(unusual) > 0:
                     print('正常', casting_id)
                 else:
-                    if unusual == signal_loss:
-                        print('拍照位离开信号丢失', casting_id)
+                    if unusual != normal:
+                        print('信号丢失', casting_id)
                     elif cost_time and (datetime.strptime(cost_time1, "%Y-%m-%d %H:%M:%S") -
                                         datetime.strptime(cost_time, "%Y-%m-%d %H:%M:%S")).seconds < 1:
                         print('信号跳变', casting_id)
@@ -40,6 +40,10 @@ def analyse_log(src_file, casting_id='', cost_time=''):
                 unusual.append('set signal_id: 5')
             if 'reset signal_id 5' in line:
                 unusual.append('reset signal_id 5')
+            if 'set signal_id: 6' in line:
+                unusual.append('set signal_id: 6')
+            if 'reset signal_id 6' in line:
+                unusual.append('reset signal_id 6')
             if 'RETURNING casting_id:' in line:
                 casting_id = line.split()[-1]
                 unusual.append('RETURNING casting_id:')
