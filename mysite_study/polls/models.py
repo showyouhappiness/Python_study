@@ -14,6 +14,7 @@ class Question(models.Model):
 
     class Meta:
         db_table = 'Question'
+        app_label = 'Question'
 
     def was_published_recently(self):
         now = timezone.now()
@@ -30,3 +31,4 @@ class Choice(models.Model):
 
     class Meta:
         db_table = 'Choice'
+        app_label = 'Choice'
