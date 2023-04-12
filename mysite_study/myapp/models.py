@@ -8,3 +8,4 @@ class User(models.Model):
     # fields
     class Meta:
         app_label = 'myapp'
+        db_table = 'user'
