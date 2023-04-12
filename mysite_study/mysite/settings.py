@@ -40,7 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',  # 消息框架
     'django.contrib.staticfiles',  # 管理静态文件的框架
     'livereload',  # 页面自动更新，因为配置原因目前用不了
+    'rest_framework',
     'polls.apps.PollsConfig',
+    'user.apps.UserConfig',
+    'myapp.apps.MyappConfig',
 ]
 
 MIDDLEWARE = [
