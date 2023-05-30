@@ -27,4 +27,5 @@ urlpatterns = [
     path('polls/', include('polls.urls')),  # 包含 polls 应用的 URL, 也就是 polls.urls。
     path('user/', include('user.urls')),  # 包含 user 应用的 URL, 也就是 user.urls。
     path('myapp/', include('myapp.urls')),  # 包含 myapp 应用的 URL, 也就是 myapp.urls。
+    path('blogPost/', include('blogPost.urls')),  # 包含 blogPost 应用的 URL, 也就是 blogPost.urls。
 ]
