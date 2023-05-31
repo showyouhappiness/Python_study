@@ -213,3 +213,60 @@ def is_float_number(strNum):
 import uuid
 
 print(uuid.uuid4())
+
+# 给定一个列表，使用sort对其进行去重操作，从最后一个元素开始。
+ids = [1, 4, 3, 3, 4, 2, 3, 4, 5, 6, 1]
+news_ids = list(set(ids))
+ids.reverse()
+news_ids.sort(key=ids.index)
+print(news_ids)
+
+
+# 判断一个字符串是不是回文字符串，如：'abcba'是回文字符串，'abccba'也是回文字符串
+def is_palindrome(string):  # 判断回文数，切片法，支持长字符串，不会栈溢出，但是会创建一个反转的字符串，占用内存
+    # 移除字符串中的空格和标点符号，并将所有字母转换为小写
+    cleaned_string = ''.join(char.lower() for char in string if char.isalnum())
+
+    # 判断字符串是否与反转后的字符串相同
+    return cleaned_string == cleaned_string[::-1]
+
+
+def is_palindrom(s):  # 判断回文数，递归法，但不支持长字符串，容易栈溢出
+    """判断回文数，递归法"""
+    if len(s) < 2:
+        return True
+    if s[0] == s[-1]:
+        return is_palindrom(s[1:-1])
+    else:
+        return False
+
+
+print(is_palindrom('abcba'))
+
+from functools import reduce
+
+# 对列表中的所有元素求和
+numbers = [1, 2, 3, 4, 5]
+summed = reduce(lambda x, y: x * y, numbers)
+print(summed)  # 输出: 15
+
+
+def singleton(cls):
+    instances = {}
+
+    def wrapper(*args, **kwargs):
+        if cls not in instances:
+            instances[cls] = cls(*args, **kwargs)
+        return instances[cls]
+
+    return wrapper
+
+
+@singleton
+class SingletonClass:
+    def __init__(self):
+        pass
+
+
+# 创建单例实例
+instance = SingletonClass()
