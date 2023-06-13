@@ -48,4 +48,4 @@ def analyse_log(src_file, casting_id='', cost_time=''):
 
 
 if __name__ == '__main__':
-    glob_log_files('E:\\log\\xinglong')
+    glob_log_files('E:\\log\\xinglong\\log_file10')
