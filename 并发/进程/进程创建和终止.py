@@ -21,7 +21,7 @@ if __name__ == '__main__':
     p = Process(target=task, name='task', args=(1, 'task'))
     p.start()
     print(p.name)
-    p2 = Process(target=task2, name='task2', args=(2, 'task2'))
+    p2 = Process(target=task, name='task2', args=(2, 'task2'))
     p2.start()
     print(p2.name)
 
@@ -29,8 +29,8 @@ if __name__ == '__main__':
         number += 1
         sleep(0.2)
         if number == 100:
-            p.terminate()
-            p2.terminate()
+            p.terminate()  # 终止进程
+            p2.terminate()  # 终止进程
             break
         else:
             print('number——>{}'.format(number))

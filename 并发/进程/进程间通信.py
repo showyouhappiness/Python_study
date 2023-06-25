@@ -29,6 +29,6 @@ if __name__ == '__main__':
     # 启动子进程pr，读取:
     pr.start()
     # 等待pw结束:
-    pw.join()
+    pw.join()  # 如果不加 那么p1执行完之后就清除了，所以需要等待
     # pr进程里是死循环，无法等待其结束，只能强行终止:
     pr.terminate()

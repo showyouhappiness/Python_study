@@ -23,7 +23,8 @@ if __name__ == '__main__':
 
     tasks = ['起床', '洗脸', '洗头', '刷牙', '休整', '穿鞋', '出发']
     for task_detail in tasks:
-        pool.apply_async(task, args=(task_detail,), callback=callback_func)
+        pool.apply_async(task, args=(task_detail,),
+                         callback=callback_func)  # apply_async()方法用来向进程池提交需要执行的函数和参数，它不会阻塞等待子进程的执行结果  callback 用来接收子进程的返回值
     pool.close()  # 添加任务结束,不能再添加任务了
     pool.join()  # 让主进程等待所有子进程执行完毕（让主进程让步）
     for c in container:

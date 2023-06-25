@@ -20,7 +20,7 @@ def getfile(q):
 
 
 if __name__ == '__main__':
-    q = Queue(5)
+    q = Queue(5)  # 最多放5个数据，超过5个就会阻塞
     p1 = Process(target=download, args=(q,))
     p2 = Process(target=getfile, args=(q,))
 

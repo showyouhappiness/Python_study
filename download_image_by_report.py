@@ -240,8 +240,8 @@ def get_both_algo_passed_wheel(db_obj, fdw_schema, cur_schema, begintime, endtim
                  f" ON kf.knuckle_id = k.knuckle_id " \
                  f" WHERE k.process_datetime >= %(begintime)s " \
                  f" AND k.process_datetime < %(endtime)s " \
-                 f" AND kf.result = 'Pass' " \
-                 f" AND k.result = 'Pass' " \
+                 f" AND kf.result = 'OK' " \
+                 f" AND k.result = 'OK' " \
                  f" AND kf.valid=1;"
     sql_script_variable = {
         'begintime': begintime,
