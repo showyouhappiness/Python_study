@@ -7,6 +7,11 @@ from selenium.webdriver.support import expected_conditions
 
 import pandas as pd
 
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+
+driver = webdriver.Chrome(ChromeDriverManager().install())
+
 
 class MyCrawler(object):
     def __init__(self):

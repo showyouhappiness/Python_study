@@ -1,6 +1,6 @@
 dict = {'001375_Lef_0_result.jpg': 'Lef_0_result',
         '001375_Lef_2_result.jpg': 'Lef_2_result',
-        '001375_Top_1_result': 'Top_1_result',
+        '001375_Top_1_result.jpg': 'Top_1_result',
         '001375_Top_2_result.jpg': 'Top_2_result',
         '001375_Btm_0_result.jpg': 'Btm_0_result',
         '001375_Btm_2_result.jpg': 'Btm_2_result',

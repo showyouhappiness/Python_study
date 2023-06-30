@@ -24,5 +24,5 @@ def power2(x, n):
     return x * power(x, n - 1)
 
 
-x = power2(2, -4)
+x = power2(2, 6)
 print(x)
