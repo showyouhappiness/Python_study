@@ -8,8 +8,8 @@ import collections
 import pandas as pd
 
 defect_list = ["缩松", "缩松2", "气孔", "气孔2", "钉子", "夹渣", "浇不足", "缩孔", "裂纹", "裂纹1"]
-os.chdir(r'C:\Users\Public\Nwt\cache\recv\LeonZhuPC\dbToExcel\crf_line3')
-df1 = pd.read_excel(r'line.3_3_report_2022-10-13_15_27_21.xlsx')
+os.chdir(r'D:\Nwt\cache\recv\LeonZhuPC\dbToExcel\crf_mengwei\1409')
+df1 = pd.read_excel(r'line.mengwei_8_report_2023-07-05_11_23_07.xlsx')
 data6 = df1.iloc[:, [0, 1, 2, 3, 5]].values  # 读取指定列的所有行数据：读取第一列所有数据
 wheel_type_list = []
 defect_name = []
@@ -19,10 +19,10 @@ all_defect_dict_OK = collections.OrderedDict()
 all_defect_dict_Fail = collections.OrderedDict()
 manual_result = ''
 i = 0
-page = Page(layout=Page.DraggablePageLayout)
+page = Page()
 
 
-def echarts(title, yAxis1, yAxis2, xAxis, index, classify1, classify2):
+def echarts(title, yAxis1, yAxis2, xAxis, classify1, classify2):
     index = Bar()
     index.add_xaxis(xAxis)
     index.add_yaxis(classify1, yAxis1)
@@ -37,7 +37,7 @@ def defect_10(key, value, value2, index, classify, classify2):
     bins = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170]
     yAxis1 = pd.value_counts(pd.cut(value, bins)).tolist()
     yAxis2 = pd.value_counts(pd.cut(value2, bins)).tolist()
-    echarts(key, yAxis1, yAxis2, bins, str(index), classify, classify2)
+    echarts(key, yAxis1, yAxis2, bins, classify, classify2)
     # print(key, '\n', pd.value_counts(cats))  # 按区间计数
 
 
@@ -45,7 +45,7 @@ def defect_5(key, value, value2, index, classify, classify2):
     bins = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85]
     yAxis1 = pd.value_counts(pd.cut(value, bins)).tolist()
     yAxis2 = pd.value_counts(pd.cut(value2, bins)).tolist()
-    echarts(key, yAxis1, yAxis2, bins, str(index), classify, classify2)
+    echarts(key, yAxis1, yAxis2, bins, classify, classify2)
     # print(key, '\n', pd.value_counts(cats))  # 按区间计数
 
 
