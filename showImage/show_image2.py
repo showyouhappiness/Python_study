@@ -7,7 +7,7 @@ pic_show_label = QtWidgets.QLabel()
 pic_show_label.resize(500, 500)
 
 # 图片路径
-img_path = "../yucun.gif"
+img_path = "../study/yucun.gif"
 
 # 通过cv读取图片
 img = cv2.imread(img_path)

@@ -24,7 +24,7 @@ class MyClass(QMainWindow, Ui_MainWindow):
         # 设置展示控件
 
         # 通过cv读取图片
-        img = cv2.imread("../yucun.gif")
+        img = cv2.imread("../study/yucun.gif")
         # 通道转化
         RGBImg = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         # 将图片转化成Qt可读格式
