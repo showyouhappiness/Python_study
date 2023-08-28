@@ -12,5 +12,5 @@ class blogPost(models.Model):
         return self.title
 
     class Meta:
-        db_table = 'blogPost'
-        app_label = 'blogPost'
+        db_table = 'blogPost'  # 指定数据表名
+        app_label = 'blogPost'  # 指定该model属于哪个app

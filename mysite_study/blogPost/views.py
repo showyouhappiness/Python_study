@@ -20,8 +20,8 @@ def blogPostList(request):
         serializer = blogPostSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return response.Response(serializer.data, status=status.HTTP_201_CREATED)
-        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return response.Response(serializer.data, status=status.HTTP_201_CREATED)  # 201 代表成功创建了一个对象
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # 400 代表请求无效
 
 
 @decorators.api_view(['GET', 'PUT', 'DELETE'])
@@ -32,7 +32,7 @@ def blogPostDetail(request, pk):
     try:
         blog_post = blogPost.objects.get(pk=pk)
     except blogPost.DoesNotExist:
-        return response.Response(status=status.HTTP_404_NOT_FOUND)
+        return response.Response(status=status.HTTP_404_NOT_FOUND)  # 404 代表请求的资源不存在
 
     if request.method == 'GET':
         serializer = blogPostSerializer(blog_post)
@@ -43,11 +43,11 @@ def blogPostDetail(request, pk):
         if serializer.is_valid():
             serializer.save()
             return response.Response(serializer.data)
-        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  # 400 代表请求无效
 
     elif request.method == 'DELETE':
         blog_post.delete()
-        return response.Response(status=status.HTTP_204_NO_CONTENT)
+        return response.Response(status=status.HTTP_204_NO_CONTENT)  # 204 代表成功处理了请求并且没有返回任何内容
 
 
 class blogPostListView(views.APIView):

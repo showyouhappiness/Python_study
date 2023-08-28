@@ -14,7 +14,8 @@ class asset_type(models.Model):
 # Create your models here.
 class resource(models.Model):
     appid = models.CharField(max_length=100)
-    service = models.ForeignKey(asset_type, on_delete=models.CASCADE, to_field='service_id')
+    service = models.ForeignKey(asset_type, on_delete=models.CASCADE,
+                                to_field='service_id')  # 外键,关联asset_type表,on_delete的值代表删除关联数据时,当前数据也删除
     service_name = models.CharField(max_length=100)
     appid_service_max = models.IntegerField()
     appid_max = models.IntegerField()
